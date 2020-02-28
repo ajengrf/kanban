@@ -34,6 +34,24 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: {
           args: true,
           msg: 'E-mail should not be empty!'
+        },
+        unique: function (email, next) {
+          return User
+            .findOne({
+              where: {
+                email: email
+              }
+            })
+            .then(result => {
+              if (result) {
+                throw 'Email address already exist!'
+              } else {
+                next()
+              }
+            })
+            .catch(err => {
+              next(err)
+            })
         }
       }
     },
