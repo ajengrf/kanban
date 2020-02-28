@@ -28,8 +28,8 @@
 
 <script>
 import axios from "axios";
-// const server = "https://kanban-ajengrf.herokuapp.com";
-const server = "http://localhost:3000";
+const server = "https://kanban-ajengrf.herokuapp.com";
+// const server = "http://localhost:3000";
 
 export default {
   props: ["lists", "name"],
