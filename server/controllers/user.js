@@ -39,11 +39,19 @@ class UserController {
             const token = jwt.sign({ id: result.id, email: result.email }, process.env.JWT_TOKEN)
             res.status(200).json({ token: token, UserId: result.id })
           } else {
-            throw createError('Invalid email / password!', { name: 'invalidLogin' })
+            let error = {
+              statusCode: 404,
+              message: 'Invalid email / password!'
+            }
+            throw error
           }
         }
         else {
-          throw new createError.NotFound()
+          let error = {
+            statusCode: 404,
+            message: 'User not found!'
+          }
+          throw error
         }
       })
       .catch(next)

@@ -10942,7 +10942,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
-var server = "https://kanban-ajengrf.herokuapp.com";
+// const server = "https://kanban-ajengrf.herokuapp.com";
+var server = "http://localhost:3000";
 var _default = {
   name: "registrationPage",
   components: {
@@ -11363,7 +11364,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
-var server = "https://kanban-ajengrf.herokuapp.com";
+// const server = "https://kanban-ajengrf.herokuapp.com";
+var server = "http://localhost:3000";
 var _default = {
   props: ["lists", "name"],
   data: function data() {
@@ -11660,7 +11662,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
-var server = "https://kanban-ajengrf.herokuapp.com";
+// const server = "https://kanban-ajengrf.herokuapp.com";
+var server = "http://localhost:3000";
 var _default = {
   components: {
     GoogleLogin: _vueGoogleLogin.default
@@ -11692,6 +11695,14 @@ var _default = {
     onSignIn: function onSignIn(googleUser) {
       var id_token = googleUser.getAuthResponse().id_token;
       this.$emit("gsignin", id_token);
+    },
+    registerUser: function registerUser() {
+      this.$emit("registerUser", this.register);
+      this.register = {};
+    },
+    loginUser: function loginUser() {
+      this.$emit("loginUser", this.login);
+      this.login = {};
     }
   }
 };
@@ -11731,7 +11742,7 @@ exports.default = _default;
                 on: {
                   submit: function($event) {
                     $event.preventDefault()
-                    return _vm.$emit("registerUser", _vm.register)
+                    return _vm.registerUser($event)
                   }
                 }
               },
@@ -11835,7 +11846,7 @@ exports.default = _default;
                   on: {
                     submit: function($event) {
                       $event.preventDefault()
-                      return _vm.$emit("loginUser", _vm.login)
+                      return _vm.loginUser($event)
                     }
                   }
                 },
@@ -12023,8 +12034,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
-// const server = "http://localhost:3000";
-var server = "https://kanban-ajengrf.herokuapp.com";
+var server = "http://localhost:3000"; // const server = "https://kanban-ajengrf.herokuapp.com";
+
 var _default = {
   components: {
     sidebar: _sidebar.default,
@@ -12042,7 +12053,8 @@ var _default = {
       complete: [],
       showsidebar: false,
       registerpage: false,
-      loginpage: false
+      loginpage: false,
+      socketdata: null
     };
   },
   created: function created() {
@@ -12056,21 +12068,18 @@ var _default = {
       this.registerpage = true;
     }
   },
-  // mounted() {
-  //   this.showTask();
-  // },
   sockets: {
     connect: function connect() {
       console.log("socket connected");
-    },
-    addTask: function addTask() {
-      console.log("add live nih");
-      this.lists;
-    },
-    deleteTask: function deleteTask() {
-      console.log("delete live nih");
-      this.lists;
-    }
+    } // addTask() {
+    //   console.log("add task");
+    //   if (this.socketdata) {
+    //     console.log(this.socketdata);
+    //     this.backlog.push(this.socketdata);
+    //   }
+    //   // this.addTask(s);
+    // }
+
   },
   methods: {
     gSignIn: function gSignIn(id_token) {
@@ -12097,20 +12106,21 @@ var _default = {
     registerUser: function registerUser(userData) {
       var _this2 = this;
 
+      console.log(userData, "<");
       (0, _axios.default)({
         method: "post",
         url: "".concat(server, "/register"),
         data: userData
       }).then(function (result) {
-        console.log(result.data);
         Swal.fire({
           icon: "success",
           title: " Registration Success!",
           showConfirmButton: false,
           timer: 1500
         });
-        _this2.registerpage = false;
+        userData.done();
         _this2.registerpage = true;
+        _this2.loginpage = true;
       }).catch(function (err) {
         console.log(err.response.data, "< register");
         Swal.fire({
@@ -12193,7 +12203,8 @@ var _default = {
         },
         data: task
       }).then(function (result) {
-        console.log(result.data);
+        _this5.socketdata = result.data;
+        console.log(_this5.socketdata, "<");
 
         _this5.backlog.push(result.data);
       }).catch(function (err) {
@@ -22510,7 +22521,8 @@ var _socket = _interopRequireDefault(require("socket.io-client"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var socket = (0, _socket.default)('https://kanban-ajengrf.herokuapp.com');
+// const socket = io('https://kanban-ajengrf.herokuapp.com');
+var socket = (0, _socket.default)('http://localhost:3000');
 
 _vue.default.use(_vueSocket.default, socket);
 
@@ -22547,7 +22559,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52092" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60465" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

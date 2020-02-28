@@ -8,7 +8,7 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 const port = process.env.PORT || 3000
 const routes = require('./routes/index')
-const errorHandling = require('./helpers/errorHandling')
+const errorHandling = require('./middlewares/errorHandling')
 const cors = require('cors')
 
 app.use(cors())
@@ -24,13 +24,4 @@ app.use('/', routes)
 app.get('/', (req, res) => { res.status(200).json("welcome!") })
 app.use(errorHandling)
 
-// io.on('connection', function (socket) {
-//   socket.emit('news', { hello: 'world' });
-//   socket.on('my other event', function (data) {
-//     console.log(data);
-//   });
-// });
-
-// app.listen(port, () => console.log(`Listening on port ${port}!`))
 server.listen(port, () => console.log(`Listening on port ${port}!`))
-

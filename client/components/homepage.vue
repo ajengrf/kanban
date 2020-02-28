@@ -1,7 +1,7 @@
 <template>
   <div class="login-page" v-show="registerpage">
     <div class="form" v-if="!showReg">
-      <form class="login-form" v-on:submit.prevent="$emit('registerUser', register)">
+      <form class="login-form" v-on:submit.prevent="registerUser">
         <input type="text" placeholder="name" v-model="register.name" />
         <input type="password" placeholder="password" v-model="register.password" />
         <input type="email" placeholder="email address" v-model="register.email" />
@@ -17,7 +17,7 @@
     </h2>
 
     <div class="form" v-if="showReg">
-      <form class="login-form" v-on:submit.prevent="$emit('loginUser', login)">
+      <form class="login-form" v-on:submit.prevent="loginUser">
         <input type="email" placeholder="email" v-model=" login.email" />
         <input type="password" placeholder="password" v-model=" login.password" />
         <button>login</button>
@@ -39,7 +39,8 @@
 <script>
 import axios from "axios";
 import GoogleLogin from "vue-google-login";
-const server = "https://kanban-ajengrf.herokuapp.com";
+// const server = "https://kanban-ajengrf.herokuapp.com";
+const server = "http://localhost:3000";
 
 export default {
   components: {
@@ -72,6 +73,14 @@ export default {
     onSignIn(googleUser) {
       let id_token = googleUser.getAuthResponse().id_token;
       this.$emit("gsignin", id_token);
+    },
+    registerUser() {
+      this.$emit("registerUser", this.register);
+      this.register = {};
+    },
+    loginUser() {
+      this.$emit("loginUser", this.login);
+      this.login = {};
     }
   }
 };

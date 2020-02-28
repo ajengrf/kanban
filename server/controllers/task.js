@@ -1,4 +1,4 @@
-const { Task } = require('../models')
+const { Task, User } = require('../models')
 const createError = require('http-errors')
 
 class TaskController {
@@ -22,7 +22,7 @@ class TaskController {
   static showAll(req, res, next) {
 
     Task
-      .findAll()
+      .findAll({ include: User })
       .then(tasks => {
         res.status(200).json(tasks)
       })
@@ -86,6 +86,7 @@ class TaskController {
         returning: true
       })
       .then(result => {
+        req.io.emit("updateTask")
         res.status(201).json(result[1][0])
       })
       .catch(next)

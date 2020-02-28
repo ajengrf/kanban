@@ -40,8 +40,8 @@
 </template>
 
 <script>
-// const server = "http://localhost:3000";
-const server = "https://kanban-ajengrf.herokuapp.com";
+const server = "http://localhost:3000";
+// const server = "https://kanban-ajengrf.herokuapp.com";
 import axios from "axios";
 import sidebar from "./components/sidebar";
 import register from "./components/register";
@@ -66,7 +66,8 @@ export default {
       complete: [],
       showsidebar: false,
       registerpage: false,
-      loginpage: false
+      loginpage: false,
+      socketdata: null
     };
   },
   created: function() {
@@ -80,21 +81,18 @@ export default {
       this.registerpage = true;
     }
   },
-  // mounted() {
-  //   this.showTask();
-  // },
   sockets: {
     connect() {
       console.log("socket connected");
-    },
-    addTask() {
-      console.log("add live nih");
-      this.lists;
-    },
-    deleteTask() {
-      console.log("delete live nih");
-      this.lists;
     }
+    // addTask() {
+    //   console.log("add task");
+    //   if (this.socketdata) {
+    //     console.log(this.socketdata);
+    //     this.backlog.push(this.socketdata);
+    //   }
+    //   // this.addTask(s);
+    // }
   },
   methods: {
     gSignIn(id_token) {
@@ -115,21 +113,22 @@ export default {
         });
     },
     registerUser: function(userData) {
+      console.log(userData, "<");
       axios({
         method: "post",
         url: `${server}/register`,
         data: userData
       })
         .then(result => {
-          console.log(result.data);
           Swal.fire({
             icon: "success",
             title: " Registration Success!",
             showConfirmButton: false,
             timer: 1500
           });
-          this.registerpage = false;
+          userData.done();
           this.registerpage = true;
+          this.loginpage = true;
         })
         .catch(err => {
           console.log(err.response.data, "< register");
@@ -210,7 +209,8 @@ export default {
         data: task
       })
         .then(result => {
-          console.log(result.data);
+          this.socketdata = result.data;
+          console.log(this.socketdata, "<");
           this.backlog.push(result.data);
         })
         .catch(err => {
